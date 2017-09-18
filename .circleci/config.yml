@@ -21,7 +21,6 @@ run-install-alpine-pkgs: &run-install-alpine-pkgs
       git \
       make \
       openssh-client
-    retry pip install tox
 
 jobs:
 
@@ -32,6 +31,7 @@ jobs:
     steps:
       - run:
           << : *run-install-alpine-pkgs
+      - run: pip install tox
       - checkout
       - run: make lint-py27
       - run: make test-py27
@@ -48,6 +48,7 @@ jobs:
     steps:
       - run:
           << : *run-install-alpine-pkgs
+      - run: pip install tox
       - checkout
       - run: make lint-py34
       - run: make test-py34
