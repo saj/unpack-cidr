@@ -129,11 +129,13 @@ jobs:
               --user "${CIRCLE_PROJECT_USERNAME}" \
               --repo "${CIRCLE_PROJECT_REPONAME}" \
               --tag "${CIRCLE_TAG}" \
+              --name unpack-cidr-py2 \
               --file dist/unpack-cidr-py2
             github-release upload \
               --user "${CIRCLE_PROJECT_USERNAME}" \
               --repo "${CIRCLE_PROJECT_REPONAME}" \
               --tag "${CIRCLE_TAG}" \
+              --name unpack-cidr-py3 \
               --file dist/unpack-cidr-py3
             # Remove the draft flag.
             github-release edit \
