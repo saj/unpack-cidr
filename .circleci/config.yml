@@ -124,7 +124,7 @@ jobs:
               --user "${CIRCLE_PROJECT_USERNAME}" \
               --repo "${CIRCLE_PROJECT_REPONAME}" \
               --tag "${CIRCLE_TAG}" \
-              --draft=true
+              --draft
             github-release upload \
               --user "${CIRCLE_PROJECT_USERNAME}" \
               --repo "${CIRCLE_PROJECT_REPONAME}" \
