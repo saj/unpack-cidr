@@ -42,7 +42,7 @@ def unicodify(stringish):
 
 
 def network(cidr):
-    return ipaddress.ip_network(unicodify(cidr))
+    return ipaddress.ip_network(unicodify(cidr), strict=False)
 
 
 def main(argv=None):
