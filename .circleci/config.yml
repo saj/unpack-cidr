@@ -75,7 +75,7 @@ jobs:
             version="$(get_version)"
             [ -n "${version}" ]
             echo "${version}" | egrep -q '^[0-9]+\.'
-            [ "${version}" -ne '0.dev1' ]
+            [ "${version}" != '0.dev1' ]
 
   pre-release-py34:
     docker:
@@ -95,7 +95,7 @@ jobs:
             version="$(get_version)"
             [ -n "${version}" ]
             echo "${version}" | egrep -q '^[0-9]+\.'
-            [ "${version}" -ne '0.dev1' ]
+            [ "${version}" != '0.dev1' ]
 
   release:
     docker:
