@@ -72,10 +72,11 @@ jobs:
             get_version() {
               ./dist/unpack-cidr-py2 --version 2>&1 | cut -d ' ' -f 2
             }
+            [ -n "${CIRCLE_TAG}" ]
             version="$(get_version)"
             [ -n "${version}" ]
-            echo "${version}" | egrep -q '^[0-9]+\.'
             [ "${version}" != '0.dev1' ]
+            [ "v${version}" = "${CIRCLE_TAG}" ]
 
   pre-release-py34:
     docker:
@@ -92,10 +93,11 @@ jobs:
             get_version() {
               ./dist/unpack-cidr-py3 --version 2>&1 | cut -d ' ' -f 2
             }
+            [ -n "${CIRCLE_TAG}" ]
             version="$(get_version)"
             [ -n "${version}" ]
-            echo "${version}" | egrep -q '^[0-9]+\.'
             [ "${version}" != '0.dev1' ]
+            [ "v${version}" = "${CIRCLE_TAG}" ]
 
   release:
     docker:
