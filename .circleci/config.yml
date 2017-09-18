@@ -135,11 +135,11 @@ jobs:
               --repo "${CIRCLE_PROJECT_REPONAME}" \
               --tag "${CIRCLE_TAG}" \
               --file dist/unpack-cidr-py3
+            # Remove the draft flag.
             github-release edit \
               --user "${CIRCLE_PROJECT_USERNAME}" \
               --repo "${CIRCLE_PROJECT_REPONAME}" \
-              --tag "${CIRCLE_TAG}" \
-              --draft=false
+              --tag "${CIRCLE_TAG}"
 
 workflows:
   version: 2
