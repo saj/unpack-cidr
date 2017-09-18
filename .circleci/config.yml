@@ -1,0 +1,55 @@
+version: 2
+
+run-install-alpine-pkgs: &run-install-alpine-pkgs
+  name: Install Alpine packages
+  command: |
+    set -x
+    retry() {
+      for i in $(seq 5); do
+        set +e
+        $@
+        rc=$?
+        set -e
+        [ "${rc}" -eq 0 ] && return 0
+        sleep 1
+      done
+      return 1
+    }
+    retry apk update
+    retry apk add --no-progress \
+      bash \
+      git \
+      make \
+      openssh-client
+    retry pip install tox
+
+jobs:
+
+  build-py27:
+    docker:
+      - image: python:2.7-alpine3.4
+    working_directory: ~/build
+    steps:
+      - run:
+          << : *run-install-alpine-pkgs
+      - checkout
+      - run: make lint-py27
+      - run: make test-py27
+
+  build-py34:
+    docker:
+      - image: python:3.4-alpine3.4
+    working_directory: ~/build
+    steps:
+      - run:
+          << : *run-install-alpine-pkgs
+      - checkout
+      - run: make lint-py34
+      - run: make test-py34
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build-py27
+      - build-py34
