@@ -102,8 +102,39 @@ jobs:
       - image: golang:1.9-alpine3.6
     working_directory: ~/project
     steps:
+      - run:
+          name: Install github-release
+          command: go get github.com/aktau/github-release
       - attach_workspace:
           at: .
+      - run:
+          name: Release with github-release
+          command: |
+            set -x
+            set -e
+            [ -n "${CIRCLE_PROJECT_USERNAME}" ]
+            [ -n "${CIRCLE_PROJECT_REPONAME}" ]
+            [ -n "${CIRCLE_TAG}" ]
+            github-release release \
+              --user "${CIRCLE_PROJECT_USERNAME}" \
+              --repo "${CIRCLE_PROJECT_REPONAME}" \
+              --tag "${CIRCLE_TAG}" \
+              --draft=true
+            github-release upload \
+              --user "${CIRCLE_PROJECT_USERNAME}" \
+              --repo "${CIRCLE_PROJECT_REPONAME}" \
+              --tag "${CIRCLE_TAG}" \
+              --file dist/unpack-cidr-py2
+            github-release upload \
+              --user "${CIRCLE_PROJECT_USERNAME}" \
+              --repo "${CIRCLE_PROJECT_REPONAME}" \
+              --tag "${CIRCLE_TAG}" \
+              --file dist/unpack-cidr-py3
+            github-release edit \
+              --user "${CIRCLE_PROJECT_USERNAME}" \
+              --repo "${CIRCLE_PROJECT_REPONAME}" \
+              --tag "${CIRCLE_TAG}" \
+              --draft=false
 
 workflows:
   version: 2
