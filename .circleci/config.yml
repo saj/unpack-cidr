@@ -103,6 +103,8 @@ jobs:
     working_directory: ~/project
     steps:
       - run:
+          << : *run-install-alpine-pkgs
+      - run:
           name: Install github-release
           command: go get github.com/aktau/github-release
       - attach_workspace:
