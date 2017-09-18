@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Run pylint over all Python modules that are direct descendants of one or more
+# named directories.  The directories need not be Python packages.
+
+set -u
+set -o pipefail
+
+
+main() {
+  local -a pylint_opts
+  local -a pylint_dirs
+
+  local in_opts='true'
+  for arg in "$@"; do
+    if "${in_opts}"; then
+      if [[ "${arg}" = '--' ]]; then
+        in_opts='false'
+        continue
+      fi
+      if [[ "${arg:0:1}" = '-' ]]; then
+        pylint_opts+=("${arg}")
+      else
+        in_opts='false'
+      fi
+    fi
+    if ! "${in_opts}"; then
+      pylint_dirs+=("${arg}")
+    fi
+  done
+
+  local rc
+  for d in "${pylint_dirs[@]}"; do
+    find "$d" -mindepth 1 -maxdepth 1 -type f -name '*.py' -print0 \
+      | xargs -0 pylint "${pylint_opts[@]}"
+    rc=$?
+    if [[ $rc -ne 0 ]]; then
+      return $rc
+    fi
+  done
+}
+
+
+main "$@"

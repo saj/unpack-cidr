@@ -1,0 +1,70 @@
+[BASIC]
+
+# Exempt short functions from mandatory docstrings.  If the function
+# forms part of an external interface, it should still be documented!
+docstring-min-length=10
+
+# Explain in what way an identifier name is invalid.
+include-naming-hint=yes
+
+# Permit long identifiers:  test identifiers should be descriptive.
+function-rgx=[a-z_][a-z0-9_]+$
+function-name-hint=[a-z_][a-z0-9_]+$
+method-rgx=[a-z_][a-z0-9_]+$
+method-name-hint=[a-z_][a-z0-9_]+$
+
+
+[MESSAGES CONTROL]
+
+# duplicate-code:
+#   False positives galore.  Human code review is more effective at
+#   highlighting opportunities for refactoring.
+#
+# fixme:
+#   Suppress warnings for TODOs in comments.  TODOs, when used properly,
+#   should never be used to flag broken code, so these should be safe to
+#   ignore in automated linter checks.
+#
+# locally-disabled,
+# locally-enabled:
+#   Nuisance informational 'warnings' that highlight pylint pragmas in
+#   code.  We insert these pragmas specifically to avoid pylint feedback
+#   in cases where deviation from policy is warranted.
+#
+# too-few-public-methods:
+#   This feedback is counter-productive at best, and completely wrong at
+#   worst.  It is reasonable, for example, to break up a large and
+#   complex function into a private helper class with only a constructor
+#   and single public method as its interface.  Within such classes,
+#   smaller (protected) methods and fewer function arguments make for
+#   more readable code.  In other cases, this message is incorrectly
+#   reported for subclasses that exist only to override Python data
+#   model methods (like __add__(), __cmp__(), and so on).
+#
+#   Upstream pylint will be deprecating and removing too-few-* for these
+#   reasons:
+#
+#   https://github.com/PyCQA/pylint/issues/605
+#
+disable=duplicate-code,fixme,locally-disabled,locally-enabled,too-few-public-methods
+
+
+[REPORTS]
+
+# Suppress the output of the pointless evaluation score.
+score=no
+
+
+[FORMAT]
+
+ignore-long-lines=^\s*(# )?<?https?://\S+>?$
+
+# As per the Google Python style guide:
+dummy-variables-rgx=^_$|^unused_
+max-line-length=80
+
+
+[TYPECHECK]
+
+# Avoid false positive import-errors.
+ignored-modules=six,six.moves

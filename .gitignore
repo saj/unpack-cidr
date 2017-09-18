@@ -1,0 +1,18 @@
+# Intermediate build output:
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+/build/
+_version.py
+
+# Ultimate build output:
+/dist/
+
+# setuptools will install build-time dependencies here:
+/.eggs/
+/*.egg
+/*.egg-info/
+
+# Local pyenv configuration:
+/.python-version
