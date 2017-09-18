@@ -9,14 +9,20 @@ from __future__ import unicode_literals
 import argparse
 import sys
 
+import _about
+
 
 def main(argv=None):
     if argv is None:
         argv = sys.argv
 
     parser = argparse.ArgumentParser(
+        prog=_about.NAME,
         description="Print an ordered list of all IPv4 or IPv6 addresses that "
         "make up one or more IPv4 or IPv6 networks.")
+    parser.add_argument(
+        "--version", action="version",
+        version="%(prog)s {version}".format(version=_about.VERSION))
     parser.add_argument(
         "networks", metavar="CIDR", nargs="+",
         help="A list of IPv4 or IPv6 networks given in CIDR notation.")

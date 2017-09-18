@@ -28,28 +28,118 @@ jobs:
   build-py27:
     docker:
       - image: python:2.7-alpine3.4
-    working_directory: ~/build
+    working_directory: ~/project
     steps:
       - run:
           << : *run-install-alpine-pkgs
       - checkout
       - run: make lint-py27
       - run: make test-py27
+      - run: make dist-pex-py27
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist
 
   build-py34:
     docker:
       - image: python:3.4-alpine3.4
-    working_directory: ~/build
+    working_directory: ~/project
     steps:
       - run:
           << : *run-install-alpine-pkgs
       - checkout
       - run: make lint-py34
       - run: make test-py34
+      - run: make dist-pex-py34
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist
+
+  pre-release-py27:
+    docker:
+      - image: python:2.7-alpine3.4
+    working_directory: ~/project
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Test for baked --version
+          command: |
+            set -x
+            set -e
+            get_version() {
+              ./dist/unpack-cidr-py2 --version 2>&1 | cut -d ' ' -f 2
+            }
+            version="$(get_version)"
+            [ -n "${version}" ]
+            echo "${version}" | egrep -q '^[0-9]+\.'
+            [ "${version}" -ne '0.dev1' ]
+
+  pre-release-py34:
+    docker:
+      - image: python:3.4-alpine3.4
+    working_directory: ~/project
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Test for baked --version
+          command: |
+            set -x
+            set -e
+            get_version() {
+              ./dist/unpack-cidr-py3 --version 2>&1 | cut -d ' ' -f 2
+            }
+            version="$(get_version)"
+            [ -n "${version}" ]
+            echo "${version}" | egrep -q '^[0-9]+\.'
+            [ "${version}" -ne '0.dev1' ]
+
+  release:
+    docker:
+      - image: golang:1.9-alpine3.6
+    working_directory: ~/project
+    steps:
+      - attach_workspace:
+          at: .
 
 workflows:
   version: 2
-  build:
+  build_release:
     jobs:
-      - build-py27
-      - build-py34
+      - build-py27:
+          filters:
+            tags:
+              only: /.*/
+      - build-py34:
+          filters:
+            tags:
+              only: /.*/
+      - pre-release-py27:
+          requires:
+            - build-py27
+          filters:
+            tags:
+              only: /^v[0-9]+.*/
+            branches:
+              ignore: /.*/
+      - pre-release-py34:
+          requires:
+            - build-py34
+          filters:
+            tags:
+              only: /^v[0-9]+.*/
+            branches:
+              ignore: /.*/
+      - release:
+          context: org-global
+          requires:
+            - pre-release-py27
+            - pre-release-py34
+          filters:
+            tags:
+              only: /^v[0-9]+.*/
+            branches:
+              ignore: /.*/
