@@ -23,7 +23,11 @@ setup(
         ],
     },
 
-    install_requires=[],
+    install_requires=[
+        "ipaddress",
+        "six",
+        "sortedcontainers",
+    ],
 
     classifiers=[
         "Development Status :: 3 - Alpha",
